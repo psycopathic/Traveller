@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ApiError } from '../utils/ApiError.js';
 
 
 const connectDB =async () => {
@@ -6,7 +7,7 @@ const connectDB =async () => {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB');
     } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
+        throw new ApiError(500, 'Error connecting to MongoDB', [error.message]);
     }
 }
 
