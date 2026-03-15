@@ -1,7 +1,7 @@
-import { asyncHandler } from "../utils/asyncHandlers";
-import { ApiError } from "../utils/apiError";
-import User from "../models/user.model";
-import { createUser } from "../services/user.service";
+import { asyncHandler } from "../utils/asyncHandlers.js";
+import { ApiError } from "../utils/ApiError.js";
+import User from "../models/user.model.js";
+import { createUser } from "../services/user.service.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
