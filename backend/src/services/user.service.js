@@ -1,5 +1,4 @@
-import User from "../models/user.model";
-import { ApiError } from "../utils/apiError";
+import User from "../models/user.model.js";
 
 export const createUser = async (fullname, email, password) => {
   const user = await User.create({
