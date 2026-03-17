@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
-import { ApiError } from '../utils/ApiError.js';
 
-
-const connectDB =async () => {
+const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('Connected to MongoDB');
+        await mongoose.connect(process.env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 3000,
+            socketTimeoutMS: 5000,
+        });
+        console.log('✓ Connected to MongoDB');
+        return true;
     } catch (error) {
-        throw new ApiError(500, 'Error connecting to MongoDB', [error.message]);
+        console.error('✗ MongoDB Error:', error.message);
+        return false;
     }
 }
 

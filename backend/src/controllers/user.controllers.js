@@ -24,3 +24,30 @@ export const registerUser = asyncHandler(async (req, res) => {
     data: user,
   });
 });
+
+export const loginUser = asyncHandler(async (req, res) => {
+    const {email, password} = req.body;
+    if(!email || !password) {
+        throw new ApiError(400, "Please provide email and password");
+    }
+
+    const user = await User.findOne({ email}).select("+password");
+    if(!user) {
+        throw new ApiError(400, "Invalid email or password");
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if(!isMatch) {
+        throw new ApiError(400, "Invalid email or password");
+    }
+    const token = user.generateAuthToken();
+    res.cookie("token", token);
+    res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        data: {
+            user,
+            token,
+        }
+    });
+});
