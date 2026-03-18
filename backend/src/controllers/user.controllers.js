@@ -51,3 +51,11 @@ export const loginUser = asyncHandler(async (req, res) => {
         }
     });
 });
+
+export const getUserProfile = asyncHandler(async (req, res) => {
+  console.log("Get user profile");
+});
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  console.log("Logout user");
+});
