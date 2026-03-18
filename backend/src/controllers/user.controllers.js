@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandlers.js";
 import { ApiError } from "../utils/ApiError.js";
 import User from "../models/user.model.js";
+import BlacklistToken from "../models/blacklistToken.model.js";
 import { createUser } from "../services/user.service.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -53,9 +54,25 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {
-  console.log("Get user profile");
+  res.status(200).json({
+    success: true,
+    data: req.user,
+    message: "User profile fetched successfully",
+  })
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-  console.log("Logout user");
+  res.clearCookie('token');
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    throw new ApiError(400, "No token provided");
+  }
+
+  await BlacklistToken.create({ token });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  });
 });

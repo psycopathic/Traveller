@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "../controllers/user.controllers.js";
+import { registerUser, loginUser, logoutUser, getUserProfile } from "../controllers/user.controllers.js";
 import { body, validationResult } from "express-validator";
+import { authUser } from "../middlewares/auth.middleware.js";
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -40,8 +41,8 @@ router.route("/login").post(
   loginUser,
 );
 
-router.route("/profile").get(getUserProfile);
+router.route("/profile").get(authUser, getUserProfile);
 
-router.route("/logout").post(logoutUser);
+router.route("/logout").get(authUser, logoutUser);
 
 export default router;
