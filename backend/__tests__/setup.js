@@ -4,9 +4,9 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 let mongoServer;
 
 export const setupTestDB = async () => {
-  // CI may not provide .env values; ensure JWT operations work in tests.
+  // Keep tests aligned with app behavior: JWT secret must come from env/.env.
   if (!process.env.JWT_SECRET) {
-    process.env.JWT_SECRET = 'test_jwt_secret';
+    throw new Error('JWT_SECRET is required for tests. Set it via .env or CI env.');
   }
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();

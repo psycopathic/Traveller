@@ -37,6 +37,7 @@ jobs:
       run: npm test
       env:
         NODE_ENV: test
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
   frontend:
     runs-on: ubuntu-latest
