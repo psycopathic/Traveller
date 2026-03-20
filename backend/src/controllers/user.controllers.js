@@ -32,7 +32,7 @@ export const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Please provide email and password");
     }
 
-    const user = await User.findOne({ email}).select("+password");
+    const user = await User.findOne({ email });
     if(!user) {
         throw new ApiError(400, "Invalid email or password");
     }
