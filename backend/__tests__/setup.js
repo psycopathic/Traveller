@@ -1,9 +1,18 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let mongoServer;
 
 export const setupTestDB = async () => {
+  // Support both JWT_SECRET and jwt_secret from environment/.env.
+  const jwtSecret = process.env.JWT_SECRET || process.env.jwt_secret;
+  if (jwtSecret) {
+    process.env.JWT_SECRET = jwtSecret;
+  }
+
   // Keep tests aligned with app behavior: JWT secret must come from env/.env.
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is required for tests. Set it via .env or CI env.');
