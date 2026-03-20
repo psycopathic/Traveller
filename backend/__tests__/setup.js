@@ -4,6 +4,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 let mongoServer;
 
 export const setupTestDB = async () => {
+  // CI may not provide .env values; ensure JWT operations work in tests.
+  if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET = 'test_jwt_secret';
+  }
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);
