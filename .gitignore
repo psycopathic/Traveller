@@ -1,2 +1,5 @@
 .env
 node_modules
+
+backend/API_CURL_COMMANDS
+backend/API_CURL_COMMANDS.md
