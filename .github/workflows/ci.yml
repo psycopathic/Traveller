@@ -35,12 +35,16 @@ jobs:
     - name: Create backend .env
       working-directory: backend
       run: |
-        if [ -z "${{ secrets.JWT_SECRET }}" ]; then
-          echo "JWT_SECRET is not configured in GitHub secrets"
-          exit 1
+        JWT_SECRET_VALUE="${{ secrets.JWT_SECRET }}"
+        if [ -z "$JWT_SECRET_VALUE" ]; then
+          JWT_SECRET_VALUE="${{ secrets.jwt_secret }}"
+        fi
+        if [ -z "$JWT_SECRET_VALUE" ]; then
+          echo "JWT secret not found in GitHub secrets. Using test fallback value."
+          JWT_SECRET_VALUE="test_jwt_secret"
         fi
         {
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
+          echo "JWT_SECRET=$JWT_SECRET_VALUE"
           echo "NODE_ENV=test"
         } > .env
     
