@@ -9,6 +9,8 @@ import { ApiError } from './utils/ApiError.js';
 
 import userRoutes from './routes/user.routes.js';
 import captainRoutes from './routes/captain.routes.js';
+import mapRoutes from './routes/map.routes.js';
+import rideRoutes from './routes/ride.routes.js';
 
 // Only connect to DB if not in test environment
 if (process.env.NODE_ENV !== 'test') {
@@ -35,6 +37,8 @@ app.get('/', (req, res) => {
 //routes
 app.use('/users', userRoutes);
 app.use('/captains', captainRoutes);
+app.use('/maps', mapRoutes);
+app.use('/rides', rideRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

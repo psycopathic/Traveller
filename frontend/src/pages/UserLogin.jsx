@@ -13,7 +13,7 @@ const UserLogin = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/home");
     }
   }, [isAuthenticated, navigate]);
 
@@ -30,7 +30,7 @@ const UserLogin = () => {
       await dispatch(loginUser({ email, password })).unwrap();
       setEmail("");
       setPassword("");
-      navigate("/");
+      navigate("/home");
     } catch {
       // Error text is handled from Redux state.
     }

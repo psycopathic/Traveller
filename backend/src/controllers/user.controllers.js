@@ -38,6 +38,9 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const user = await createUser({ firstName, lastName }, email, password);
   const token = user.generateAuthToken();
+  const userResponse = user.toObject();
+  delete userResponse.password;
+
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
@@ -46,7 +49,11 @@ export const registerUser = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     message: "User registered successfully",
-    data: user,
+    data: {
+      ...userResponse,
+      user: userResponse,
+      token,
+    },
   });
 });
 

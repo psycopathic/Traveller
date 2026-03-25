@@ -33,7 +33,7 @@ const CaptainLogin = () => {
 
       setEmail("");
       setPassword("");
-      navigate("/");
+      navigate("/captain-home");
     } catch (loginError) {
       setError(getApiErrorMessage(loginError));
     } finally {
