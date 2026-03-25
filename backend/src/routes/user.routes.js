@@ -18,10 +18,14 @@ router
   .post(
     [
       body("email").isEmail().withMessage("Invalid Email"),
-      body("fullname")
+      body("fullname.firstname")
         .trim()
         .isLength({ min: 3 })
-        .withMessage("Full name must be at least 3 characters long"),
+        .withMessage("First name must be at least 3 characters long"),
+      body("fullname.lastname")
+        .trim()
+        .isLength({ min: 3 })
+        .withMessage("Last name must be at least 3 characters long"),
       body("password")
         .isLength({ min: 6 })
         .withMessage("Password must be at least 6 characters long"),

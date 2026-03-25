@@ -6,8 +6,10 @@ import { createUser } from "../services/user.service.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
+  const firstName = fullname?.firstname;
+  const lastName = fullname?.lastname;
 
-  if (!fullname || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     throw new ApiError(400, "Please provide all required fields");
   }
 
@@ -16,13 +18,17 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User with this email already exists");
   }
 
-  const [firstName, lastName] = fullname.split(" ");
   const user = await createUser({ firstName, lastName }, email, password);
+  const token = user.generateAuthToken();
+  res.cookie("token", token);
 
   res.status(201).json({
     success: true,
     message: "User registered successfully",
-    data: user,
+    data: {
+      user,
+      token,
+    },
   });
 });
 
