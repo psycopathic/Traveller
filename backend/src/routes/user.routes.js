@@ -18,14 +18,26 @@ router
   .post(
     [
       body("email").isEmail().withMessage("Invalid Email"),
-      body("fullname.firstname")
-        .trim()
-        .isLength({ min: 3 })
-        .withMessage("First name must be at least 3 characters long"),
-      body("fullname.lastname")
-        .trim()
-        .isLength({ min: 3 })
-        .withMessage("Last name must be at least 3 characters long"),
+      body("fullname")
+        .custom((value) => {
+          if (typeof value === "string") {
+            if (value.trim().length >= 3) {
+              return true;
+            }
+            throw new Error("Full name must be at least 3 characters long");
+          }
+
+          if (value && typeof value === "object") {
+            const firstName = (value.firstname ?? value.firstName ?? "").trim();
+            const lastName = (value.lastname ?? value.lastName ?? "").trim();
+
+            if (firstName.length >= 3 && lastName.length >= 3) {
+              return true;
+            }
+          }
+
+          throw new Error("Full name must be at least 3 characters long");
+        }),
       body("password")
         .isLength({ min: 6 })
         .withMessage("Password must be at least 6 characters long"),
