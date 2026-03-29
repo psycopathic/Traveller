@@ -32,17 +32,17 @@ router.get(
 );
 
 router.post(
-	"/confirm",
+	"/confirm-ride",
 	authCaptain,
 	body("rideId").isMongoId().withMessage("Invalid ride id"),
 	confirmRide,
 );
 
-router.get(
+router.post(
 	"/start-ride",
-	authCaptain,
-	query("rideId").isMongoId().withMessage("Invalid ride id"),
-	query("otp").isString().isLength({ min: 6, max: 6 }).withMessage("Invalid OTP"),
+	authUser,
+	body("rideId").isMongoId().withMessage("Invalid ride id"),
+	body("otp").isString().isLength({ min: 6, max: 6 }).withMessage("Invalid OTP"),
 	startRide,
 );
 

@@ -3,16 +3,20 @@ import mongoose from "mongoose";
 const RideSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'user',
+        ref:'User',
         required:true
     },
     captain:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'captain',
+        ref:'Captain',
     },
     pickup:{
         type:String,
         required:true
+    },
+    destination: {
+        type: String,
+        required: true,
     },
     fare: {
         type: Number,
@@ -45,6 +49,8 @@ const RideSchema = new mongoose.Schema({
         select: false,
         required: true,
     },
+}, {
+    timestamps: true,
 })
 
 const RideModel = mongoose.model('ride', RideSchema);

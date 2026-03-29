@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import CaptainDetails from "../components/CaptainDetails";
+import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
+import LiveTracking from "../components/LiveTracking";
+import RidePopUp from "../components/RidePopUp";
 import api from "../services/api";
 import { clearStoredAuthTokens, getStoredAuthToken } from "../services/tokenStorage";
 
@@ -7,7 +11,18 @@ const CaptainHome = () => {
   const navigate = useNavigate();
   const [captain, setCaptain] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [ridePopupPanel, setRidePopupPanel] = useState(false);
+  const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
+
+  const incomingRide = {
+    id: "demo-ride-01",
+    userName: "Sanya Verma",
+    distance: "2.2 KM",
+    pickup: "Airport Terminal 1",
+    destination: "MG Road",
+    fare: 310,
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -52,6 +67,31 @@ const CaptainHome = () => {
     navigate("/captain-login", { replace: true });
   };
 
+  const handleAcceptRide = () => {
+    setRidePopupPanel(false);
+    setConfirmRidePopupPanel(true);
+  };
+
+  const handleStartRide = (otp) => {
+    if (!otp?.trim()) {
+      return;
+    }
+
+    setIsStarting(true);
+    window.setTimeout(() => {
+      setIsStarting(false);
+      setConfirmRidePopupPanel(false);
+      navigate("/captain-riding", {
+        state: {
+          ride: {
+            ...incomingRide,
+            otp,
+          },
+        },
+      });
+    }, 700);
+  };
+
   if (isLoading) {
     return <div className="min-h-screen bg-slate-100 flex items-center justify-center">Loading...</div>;
   }
@@ -75,30 +115,65 @@ const CaptainHome = () => {
           </button>
         </div>
 
-        <div className="grid gap-5 mt-6 md:grid-cols-2">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6">
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">Captain Details</h2>
-            <div className="space-y-2 text-slate-700 text-sm sm:text-base">
-              <p>
-                <span className="font-medium">Email:</span> {captain?.email || "-"}
-              </p>
-              <p>
-                <span className="font-medium">Status:</span> {captain?.status || "inactive"}
-              </p>
-              <p>
-                <span className="font-medium">Vehicle:</span>{" "}
-                {captain?.vehicle?.vehicleType || "-"} ({captain?.vehicle?.plate || "-"})
-              </p>
+        <div className="grid gap-5 mt-6 lg:grid-cols-[1.2fr_1fr]">
+          <div className="space-y-5">
+            <CaptainDetails captain={captain} />
+            <LiveTracking />
+
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6">
+              <h2 className="text-lg font-semibold text-slate-800 mb-3">Captain Account</h2>
+              <div className="space-y-2 text-slate-700 text-sm sm:text-base">
+                <p>
+                  <span className="font-medium">Email:</span> {captain?.email || "-"}
+                </p>
+                <p>
+                  <span className="font-medium">Status:</span> {captain?.status || "inactive"}
+                </p>
+                <p>
+                  <span className="font-medium">Vehicle:</span>{" "}
+                  {captain?.vehicle?.vehicleType || "-"} ({captain?.vehicle?.plate || "-"})
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6">
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">Ride Panel</h2>
-            <p className="text-slate-600 text-sm sm:text-base">
-              Live ride popups and socket updates can be added here once `SocketContext` and ride popup
-              components are integrated.
-            </p>
-            {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
+          <div className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6">
+              <h2 className="text-lg font-semibold text-slate-800 mb-2">Ride Panel</h2>
+              <p className="text-slate-600 text-sm sm:text-base">
+                This uses a mock-safe flow for now. Socket updates can be plugged in later without changing
+                these components.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmRidePopupPanel(false);
+                  setRidePopupPanel(true);
+                }}
+                className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 sm:text-base"
+              >
+                Show Incoming Ride
+              </button>
+            </div>
+
+            {ridePopupPanel && (
+              <RidePopUp
+                ride={incomingRide}
+                onAccept={handleAcceptRide}
+                onIgnore={() => setRidePopupPanel(false)}
+                onClose={() => setRidePopupPanel(false)}
+              />
+            )}
+
+            {confirmRidePopupPanel && (
+              <ConfirmRidePopUp
+                ride={incomingRide}
+                onCancel={() => setConfirmRidePopupPanel(false)}
+                onConfirmStart={handleStartRide}
+                isStarting={isStarting}
+              />
+            )}
           </div>
         </div>
 
