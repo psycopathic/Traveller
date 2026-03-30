@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://traveller-7rpg.onrender.com/">hello</a>
+  <a href="https://traveller-7rpg.onrender.com/">Traveller</a>
 </p>
 
 <p align="center">
