@@ -7,14 +7,15 @@ import cookieParser from 'cookie-parser';
 import connectDB from './db/db.js';
 import { ApiError } from './utils/ApiError.js';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import userRoutes from './routes/user.routes.js';
 import captainRoutes from './routes/captain.routes.js';
 import mapRoutes from './routes/map.routes.js';
 import rideRoutes from './routes/ride.routes.js';
 
-const __dirname = path.resolve();
-const frontendPath = path.join(__dirname, '../frontend/dist');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Only connect to DB if not in test environment
 if (process.env.NODE_ENV !== 'test') {
@@ -34,15 +35,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-
 //routes
 app.use('/users', userRoutes);
 app.use('/captains', captainRoutes);
 app.use('/maps', mapRoutes);
 app.use('/rides', rideRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(distPath));
+
+  // Return React app for non-API routes.
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('Hello World!');
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
