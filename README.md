@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="front_traveller.png" alt="Traveller — Ride Hailing Platform" width="100%" />
+  <img src="frontend/public/front_traveller.png" alt="Traveller — Ride Hailing Platform" width="100%" />
 </p>
 
 <h1 align="center">🚗 Traveller</h1>
