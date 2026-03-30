@@ -16,7 +16,7 @@ const Start = () => {
       <div className="relative z-10 h-screen pt-8 flex justify-between flex-col w-full">
         <img
           className="w-50 ml-8"
-          src="/traveller.png"
+          src="/traveller_new.png"
           alt="Traveller logo"
         />
 
