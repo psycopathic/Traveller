@@ -6,11 +6,15 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './db/db.js';
 import { ApiError } from './utils/ApiError.js';
+import path from 'path';
 
 import userRoutes from './routes/user.routes.js';
 import captainRoutes from './routes/captain.routes.js';
 import mapRoutes from './routes/map.routes.js';
 import rideRoutes from './routes/ride.routes.js';
+
+const __dirname = path.resolve();
+const frontendPath = path.join(__dirname, '../frontend/dist');
 
 // Only connect to DB if not in test environment
 if (process.env.NODE_ENV !== 'test') {
