@@ -8,6 +8,7 @@ import connectDB from './db/db.js';
 import { ApiError } from './utils/ApiError.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 import userRoutes from './routes/user.routes.js';
 import captainRoutes from './routes/captain.routes.js';
@@ -43,12 +44,22 @@ app.use('/rides', rideRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../../frontend/dist');
-  app.use(express.static(distPath));
-
-  // Return React app for non-API routes.
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+  app.get('/health', (req, res) => {
+    res.status(200).json({ success: true, message: 'Backend is healthy' });
   });
+
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+
+    // Return React app for non-API routes.
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    app.get('/', (req, res) => {
+      res.send('Traveller backend is running.');
+    });
+  }
 } else {
   app.get('/', (req, res) => {
     res.send('Hello World!');
